@@ -1,5 +1,4 @@
-view: keywords_clean {
-  label: "Keywords"
+view: keywords {
   sql_table_name: mak_movies.keywords_clean ;;
 
   dimension: id {

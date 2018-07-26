@@ -9,6 +9,7 @@ view: movies {
   }
 
   dimension: belongs_to_collection {
+    hidden: yes
     type: string
     sql: ${TABLE}.belongs_to_collection ;;
   }
@@ -31,7 +32,7 @@ view: movies {
   }
 
   dimension: imdbid {
-    hidden: yes
+    hidden: no
     type: string
     sql: ${TABLE}.imdbid ;;
   }
@@ -137,10 +138,16 @@ view: movies {
     sql: CASE WHEN ${has_homepage} THEN "Homepage" ELSE "∅" END ;;
   }
 
-  measure: vote_average {
-    type: average
+  dimension: tmdb_rating {
+    type: number
     sql: ${TABLE}.vote_average ;;
+  }
+
+  measure: average_rating{
+    type: average
+    sql: ${tmdb_rating} ;;
     value_format_name: decimal_2
+    drill_fields: [title, vote_count]
   }
 
   dimension: vote_count {
@@ -158,6 +165,7 @@ view: movies {
     type: count
     drill_fields: [title]
   }
+
 }
 
 view: movies_full {

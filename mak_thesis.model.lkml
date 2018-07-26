@@ -10,8 +10,8 @@ persist_with: mak_thesis_default_datagroup
 
 explore: movies {
   sql_always_where: ${movies.title} is not null and ${movies.status} = "Released";;
-  join: keywords_clean {
-    sql_on: ${movies.id} = ${keywords_clean.movieid} ;;
+  join: keywords {
+    sql_on: ${movies.id} = ${keywords.movieid} ;;
     relationship: one_to_many
     type: left_outer
   }
@@ -45,4 +45,20 @@ explore: movies {
     relationship: many_to_many
     type: left_outer
   }
+
+  join: directors {
+    sql_on: ${movies.imdbid} = ${directors.movie_id} ;;
+    relationship: many_to_many
+    type: left_outer
+  }
+
+  join: writers {
+    sql_on: ${movies.imdbid} = ${writers.movie_id} ;;
+    relationship: many_to_many
+  }
+
 }
+
+explore: names{}
+explore: crew {}
+explore: directors {}

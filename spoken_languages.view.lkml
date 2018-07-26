@@ -1,5 +1,6 @@
 view: spoken_languages {
   sql_table_name: mak_movies.spoken_languages ;;
+  view_label: "Movies"
 
   dimension: id {
     primary_key: yes
@@ -20,7 +21,7 @@ view: spoken_languages {
     sql: ${TABLE}.spoken_language ;;
   }
 
-  measure: count {
+  measure: language_count {
     type: count
     drill_fields: [id]
   }

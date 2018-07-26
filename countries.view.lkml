@@ -37,6 +37,7 @@ view: countries {
   }
 
   dimension: code {
+    description: "Use with Map Visualization"
     map_layer_name: countries
     sql: ${TABLE}.code ;;
   }

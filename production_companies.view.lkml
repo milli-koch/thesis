@@ -22,6 +22,7 @@ view: production_companies {
   }
 
   measure: count {
+    hidden: yes
     type: count
     drill_fields: [id]
   }
