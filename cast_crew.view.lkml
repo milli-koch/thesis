@@ -1,5 +1,5 @@
-view: cast_members {
-  sql_table_name: mak_movies.cast_members ;;
+view: cast_crew {
+  sql_table_name: mak_movies.cast_crew ;;
 
   dimension: category {
     type: string
@@ -22,7 +22,7 @@ view: cast_members {
   }
 
   dimension: ordering {
-    type: number
+    type: string
     sql: ${TABLE}.ordering ;;
   }
 

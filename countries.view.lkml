@@ -1,4 +1,5 @@
 view: countries {
+  view_label: "Region"
   derived_table: {
     sql: SELECT `lookerdata.mak_movies.production_countries`.id as row_id, sub.id as country_id,
     `lookerdata.mak_movies.production_countries`.production_country, code, movieid

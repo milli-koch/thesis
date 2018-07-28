@@ -55,10 +55,20 @@ explore: movies {
   join: writers {
     sql_on: ${movies.imdbid} = ${writers.movie_id} ;;
     relationship: many_to_many
+    type: left_outer
+  }
+
+  join: imdb_ratings {
+    sql_on: ${movies.imdbid} = ${imdb_ratings.tconst} ;;
+    relationship: one_to_one
+    type: left_outer
+  }
+
+  join: title_type {
+    sql_on: ${movies.imdbid} = ${title_type.tconst} ;;
+    relationship: one_to_one
+    type: left_outer
+    fields: [title_type.title_type]
   }
 
 }
-
-explore: names{}
-explore: crew {}
-explore: directors {}

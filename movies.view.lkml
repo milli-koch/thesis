@@ -3,7 +3,7 @@ view: movies {
 
   dimension: id {
     primary_key: yes
-    hidden: no
+    hidden: yes
     type: number
     sql: ${TABLE}.id ;;
   }
@@ -27,12 +27,13 @@ view: movies {
   }
 
   dimension: homepage {
+    hidden: yes
     type: string
     sql: ${TABLE}.homepage ;;
   }
 
   dimension: imdbid {
-    hidden: no
+    hidden: yes
     type: string
     sql: ${TABLE}.imdbid ;;
   }
@@ -70,8 +71,13 @@ view: movies {
       day_of_week
     ]
     convert_tz: no
-    datatype: date
     sql: ${TABLE}.release_date ;;
+  }
+
+  dimension: movie_year {
+    type: number
+    sql: cast(${release_year} as int64) ;;
+    value_format_name: id
   }
 
   dimension: revenue {
@@ -138,16 +144,18 @@ view: movies {
     sql: CASE WHEN ${has_homepage} THEN "Homepage" ELSE "∅" END ;;
   }
 
-  dimension: tmdb_rating {
+  dimension: vote_avg {
+    hidden: yes
     type: number
     sql: ${TABLE}.vote_average ;;
   }
 
-  measure: average_rating{
+  measure: tmdb_rating {
+    view_label: "Ratings"
     type: average
-    sql: ${tmdb_rating} ;;
-    value_format_name: decimal_2
-    drill_fields: [title, vote_count]
+    sql: ${vote_avg} ;;
+    value_format_name: decimal_1
+    drill_fields: [title, tmdb_rating, vote_count]
   }
 
   dimension: vote_count {
@@ -156,12 +164,13 @@ view: movies {
     sql: ${TABLE}.vote_count ;;
   }
 
-  measure: total_vote_count {
+  measure: tmdb_vote_count {
+    view_label: "Ratings"
     type: sum
     sql: ${vote_count} ;;
   }
 
-  measure: movie_count {
+  measure: count {
     type: count
     drill_fields: [title]
   }
