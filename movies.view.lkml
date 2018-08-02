@@ -58,6 +58,12 @@ view: movies {
     sql: ${TABLE}.popularity ;;
   }
 
+  measure: average_popularity {
+    type: average
+    sql: ${popularity} ;;
+    value_format_name: decimal_2
+  }
+
   dimension_group: release {
     type: time
     timeframes: [
@@ -102,6 +108,13 @@ view: movies {
     sql: ${TABLE}.runtime ;;
   }
 
+  dimension: runtime_tier {
+    type: tier
+    tiers: [60, 90, 120]
+    style: integer
+    sql: ${runtime} ;;
+  }
+
   measure: average_runtime {
     type: average
     sql: ${runtime} ;;
@@ -131,6 +144,10 @@ view: movies {
         label: "{{ ['movies.homepage_link'] }}"
         url: "{{ ['movies.homepage'] }}"
       }
+      link: {
+        label: "TMDb"
+        url: "https://www.themoviedb.org/movie/{{ ['movies.id'] }}"
+      }
     }
 
   dimension: has_homepage{
@@ -158,6 +175,14 @@ view: movies {
     drill_fields: [title, tmdb_rating, vote_count]
   }
 
+  measure: average_rating {
+    view_label: "Ratings"
+    type: number
+    sql: (${imdb_ratings.imdb_rating}+${movies.tmdb_rating})/2 ;;
+    value_format_name: decimal_2
+    drill_fields: [movies.title, directors.name, imdb_ratings.imdb_rating, movies.tmdb_rating]
+  }
+
   dimension: vote_count {
     hidden: yes
     type: number
@@ -175,6 +200,10 @@ view: movies {
     drill_fields: [title]
   }
 
+  measure: first_movie {
+    type: number
+    sql: min(${movie_year}) over(partition by ${directors.name});;
+  }
 }
 
 view: movies_full {

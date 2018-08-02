@@ -4,11 +4,19 @@ include: "*.view"
 
 datagroup: mak_thesis_default_datagroup {
   max_cache_age: "1 hour"
+  sql_trigger: SELECT CURDATE() ;;
 }
 
 persist_with: mak_thesis_default_datagroup
 
 explore: movies {
+  always_filter: {
+    filters: {
+      field: title_type.title_type
+      value: "movie"
+    }
+  }
+
   sql_always_where: ${movies.title} is not null and ${movies.status} = "Released";;
   join: keywords {
     sql_on: ${movies.id} = ${keywords.movieid} ;;
@@ -70,5 +78,13 @@ explore: movies {
     type: left_outer
     fields: [title_type.title_type]
   }
+
+  join: director_facts {
+    sql_on: ${movies.imdbid} = ${director_facts.movie_id}
+    and ${directors.name} = ${director_facts.name};;
+    relationship: many_to_many
+    type: left_outer
+  }
+
 
 }

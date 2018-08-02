@@ -33,11 +33,4 @@ view: imdb_ratings {
     sql: ${vote_count} ;;
   }
 
-  measure: average_rating {
-    type: number
-    sql: (${imdb_rating}+${movies.tmdb_rating})/2 ;;
-    value_format_name: decimal_2
-    drill_fields: [movies.title, directors.name, imdb_rating, movies.tmdb_rating]
-  }
-
 }
