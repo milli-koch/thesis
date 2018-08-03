@@ -1,12 +1,27 @@
 view: names {
   sql_table_name: mak_movies.names ;;
+  view_label: "Cast and Crew"
 
-  dimension: id {
+  dimension: nconst {
     primary_key: yes
-    hidden: no
+    hidden: yes
     type: string
     sql: ${TABLE}.nconst ;;
   }
+
+# VISIBLE
+
+  dimension: name {
+    type: string
+    sql: ${TABLE}.name ;;
+    link: {
+      label: "IMDb"
+      url: "https://www.imdb.com/name/{{ ['nconst'] }}"
+      icon_url: "https://imdb.com/favicon.ico"
+    }
+  }
+
+# INVISIBLE
 
   dimension: birth_year {
     type: string
@@ -18,16 +33,6 @@ view: names {
     sql: ${TABLE}.death_year ;;
   }
 
-#   dimension: known_for {
-#     type: string
-#     sql: ${TABLE}.known_for ;;
-#   }
-
-  dimension: name {
-    type: string
-    sql: ${TABLE}.name ;;
-  }
-
   dimension: primary_profession {
     type: string
     sql: ${TABLE}.primary_profession ;;
@@ -35,6 +40,12 @@ view: names {
 
   measure: count {
     type: count
-    drill_fields: [id, name]
+    drill_fields: [name]
   }
+
+#   dimension: known_for {
+#     type: string
+#     sql: ${TABLE}.known_for ;;
+#   }
+
 }

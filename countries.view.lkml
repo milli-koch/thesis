@@ -14,11 +14,6 @@ view: countries {
        ;;
   }
 
-  measure: count {
-    type: count
-    drill_fields: [detail*]
-  }
-
   dimension: row_id {
     primary_key: yes
     hidden: yes
@@ -26,11 +21,7 @@ view: countries {
     sql: ${TABLE}.row_id ;;
   }
 
-  dimension: country_id {
-    hidden: yes
-    type: number
-    sql: ${TABLE}.country_id ;;
-  }
+# VISIBLE
 
   dimension: production_country {
     type: string
@@ -43,13 +34,23 @@ view: countries {
     sql: ${TABLE}.code ;;
   }
 
+  measure: count {
+    type: count
+    drill_fields: [production_country, movies.title]
+  }
+
+# INVISIBLE
+
+  dimension: country_id {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.country_id ;;
+  }
+
   dimension: movieid {
     hidden: yes
     type: number
     sql: ${TABLE}.movieid ;;
   }
 
-  set: detail {
-    fields: [row_id, country_id, production_country, code, movieid]
-  }
 }

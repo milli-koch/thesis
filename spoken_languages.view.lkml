@@ -9,12 +9,7 @@ view: spoken_languages {
     sql: ${TABLE}.id ;;
   }
 
-  dimension: movieid {
-    hidden: yes
-    type: number
-    value_format_name: id
-    sql: ${TABLE}.movieid ;;
-  }
+# VISBIBLE
 
   dimension: spoken_language {
     type: string
@@ -23,6 +18,16 @@ view: spoken_languages {
 
   measure: language_count {
     type: count
-    drill_fields: [id]
+    drill_fields: [movies.title]
   }
+
+# INVISBLE
+
+  dimension: movieid {
+    hidden: yes
+    type: number
+    value_format_name: id
+    sql: ${TABLE}.movieid ;;
+  }
+
 }

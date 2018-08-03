@@ -8,10 +8,19 @@ view: keywords {
     sql: ${TABLE}.id ;;
   }
 
+# VISIBLE
+
   dimension: keyword {
     type: string
     sql: ${TABLE}.keyword ;;
   }
+
+  measure: count {
+    type: count
+    drill_fields: [movies.title]
+  }
+
+# INVISIBLE
 
   dimension: movieid {
     hidden: yes
@@ -20,8 +29,4 @@ view: keywords {
     sql: ${TABLE}.movieid ;;
   }
 
-  measure: count {
-    type: count
-    drill_fields: [id]
-  }
 }

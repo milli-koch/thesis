@@ -8,11 +8,6 @@ view: writers {
  ;;
   }
 
-  measure: count {
-    type: count
-    drill_fields: [detail*]
-  }
-
   dimension: prim_key {
     primary_key: yes
     hidden: yes
@@ -20,15 +15,11 @@ view: writers {
     sql: ${TABLE}.id ;;
   }
 
+# VISIBLE
+
   dimension: name {
     type: string
     sql: ${TABLE}.name ;;
-  }
-
-  dimension: writer_id {
-    hidden: yes
-    type: string
-    sql: ${TABLE}.writer_id ;;
   }
 
   dimension: birth_year {
@@ -41,13 +32,23 @@ view: writers {
     sql: ${TABLE}.death_year ;;
   }
 
+  measure: count {
+    type: count
+    drill_fields: [name, movies.title]
+  }
+
+# INVISIBLE
+
+  dimension: writer_id {
+    hidden: yes
+    type: string
+    sql: ${TABLE}.writer_id ;;
+  }
+
   dimension: movie_id {
     hidden: yes
     type: string
     sql: ${TABLE}.movie_id ;;
   }
 
-  set: detail {
-    fields: [name, movies.title]
-  }
 }

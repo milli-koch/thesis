@@ -8,34 +8,12 @@ view: movies {
     sql: ${TABLE}.id ;;
   }
 
-  dimension: belongs_to_collection {
-    hidden: yes
-    type: string
-    sql: ${TABLE}.belongs_to_collection ;;
-  }
+# VISIBLE
 
   dimension: budget {
     type: number
     sql: ${TABLE}.budget ;;
     value_format_name: usd
-  }
-
-  measure: average_budget {
-    type: average
-    sql: ${budget} ;;
-    value_format_name: usd
-  }
-
-  dimension: homepage {
-    hidden: yes
-    type: string
-    sql: ${TABLE}.homepage ;;
-  }
-
-  dimension: imdbid {
-    hidden: yes
-    type: string
-    sql: ${TABLE}.imdbid ;;
   }
 
   dimension: original_language {
@@ -51,17 +29,6 @@ view: movies {
   dimension: overview {
     type: string
     sql: ${TABLE}.overview ;;
-  }
-
-  dimension: popularity {
-    type: number
-    sql: ${TABLE}.popularity ;;
-  }
-
-  measure: average_popularity {
-    type: average
-    sql: ${popularity} ;;
-    value_format_name: decimal_2
   }
 
   dimension_group: release {
@@ -80,27 +47,9 @@ view: movies {
     sql: ${TABLE}.release_date ;;
   }
 
-  dimension: movie_year {
-    type: number
-    sql: cast(${release_year} as int64) ;;
-    value_format_name: id
-  }
-
   dimension: revenue {
     type: number
     sql: ${TABLE}.revenue ;;
-  }
-
-  measure: average_revenue {
-    type: average
-    sql: ${revenue} ;;
-    value_format_name: usd
-  }
-
-  measure: total_revenue {
-    type: sum
-    sql: ${revenue};;
-    value_format_name: usd
   }
 
   dimension: runtime {
@@ -115,40 +64,77 @@ view: movies {
     sql: ${runtime} ;;
   }
 
-  measure: average_runtime {
-    type: average
-    sql: ${runtime} ;;
-    value_format_name: decimal_2
-  }
-
-  dimension: status {
-    hidden: yes
-    type: string
-    sql: ${TABLE}.status ;;
-  }
-
   dimension: tagline {
     type: string
     sql: ${TABLE}.tagline ;;
   }
 
-    dimension: title {
-      type: string
-      sql: ${TABLE}.title ;;
-      link: {
-        label: "IMDb"
-        url:"https://www.imdb.com/title/{{ ['movies.imdbid'] }}"
-        icon_url: "https://imdb.com/favicon.ico"
-      }
-      link: {
-        label: "{{ ['movies.homepage_link'] }}"
-        url: "{{ ['movies.homepage'] }}"
-      }
-      link: {
-        label: "TMDb"
-        url: "https://www.themoviedb.org/movie/{{ ['movies.id'] }}"
-      }
+  dimension: title {
+    type: string
+    sql: ${TABLE}.title ;;
+    link: {
+      label: "IMDb"
+      url:"https://www.imdb.com/title/{{ ['movies.imdbid'] }}"
+      icon_url: "https://imdb.com/favicon.ico"
     }
+    link: {
+      label: "{{ ['movies.homepage_link'] }}"
+      url: "{{ ['movies.homepage'] }}"
+    }
+    link: {
+      label: "TMDb"
+      url: "https://www.themoviedb.org/movie/{{ ['movies.id'] }}"
+    }
+  }
+
+  measure: tmdb_vote_count {
+    view_label: "Ratings"
+    type: sum
+    sql: ${vote_count} ;;
+    drill_fields: [title, tmdb_rating]
+  }
+
+  measure: count {
+    type: count
+    drill_fields: [title]
+  }
+
+  measure: average_budget {
+    type: average
+    sql: ${budget} ;;
+    value_format_name: usd
+    drill_fields: [title, average_budget]
+  }
+
+  measure: average_popularity {
+    type: average
+    sql: ${popularity} ;;
+    value_format_name: decimal_2
+    drill_fields: [title, average_popularity]
+  }
+
+  measure: average_revenue {
+    type: average
+    sql: ${revenue} ;;
+    value_format_name: usd
+    drill_fields: [title, average_revenue]
+  }
+
+  measure: total_revenue {
+    type: sum
+    sql: ${revenue};;
+    value_format_name: usd
+    drill_fields: [title, total_revenue]
+  }
+
+  measure: average_runtime {
+    type: average
+    sql: ${runtime} ;;
+    value_format_name: decimal_2
+    drill_fields: [title, average_runtime]
+  }
+
+# INVISIBLE
 
   dimension: has_homepage{
     hidden: yes
@@ -168,19 +154,15 @@ view: movies {
   }
 
   measure: tmdb_rating {
-    view_label: "Ratings"
+    hidden: yes
     type: average
     sql: ${vote_avg} ;;
-    value_format_name: decimal_1
-    drill_fields: [title, tmdb_rating, vote_count]
   }
 
   measure: average_rating {
-    view_label: "Ratings"
+    hidden: yes
     type: number
     sql: (${imdb_ratings.imdb_rating}+${movies.tmdb_rating})/2 ;;
-    value_format_name: decimal_2
-    drill_fields: [movies.title, directors.name, imdb_ratings.imdb_rating, movies.tmdb_rating]
   }
 
   dimension: vote_count {
@@ -189,36 +171,44 @@ view: movies {
     sql: ${TABLE}.vote_count ;;
   }
 
-  measure: tmdb_vote_count {
-    view_label: "Ratings"
-    type: sum
-    sql: ${vote_count} ;;
+  dimension: status {
+    hidden: yes
+    type: string
+    sql: ${TABLE}.status ;;
   }
 
-  measure: count {
-    type: count
-    drill_fields: [title]
+  dimension: homepage {
+    hidden: yes
+    type: string
+    sql: ${TABLE}.homepage ;;
   }
 
-  measure: first_movie {
+  dimension: imdbid {
+    hidden: yes
+    type: string
+    sql: ${TABLE}.imdbid ;;
+  }
+
+  dimension: popularity {
+    hidden: yes
     type: number
-    sql: min(${movie_year}) over(partition by ${directors.name});;
+    sql: ${TABLE}.popularity ;;
   }
 }
 
 view: movies_full {
   extends: [movies]
 
-    dimension: genres {
+  dimension: genres {
     type: string
     sql: ${TABLE}.genres ;;
   }
 
-    dimension: spoken_languages {
+  dimension: spoken_languages {
     type: string
     sql: ${TABLE}.spoken_languages ;;
   }
-    dimension: poster_path {
+  dimension: poster_path {
     type: string
     sql: ${TABLE}.poster_path ;;
   }
@@ -232,4 +222,10 @@ view: movies_full {
     type: string
     sql: ${TABLE}.production_countries ;;
   }
+
+  dimension: belongs_to_collection {
+    type: string
+    sql: ${TABLE}.belongs_to_collection ;;
+  }
+
 }

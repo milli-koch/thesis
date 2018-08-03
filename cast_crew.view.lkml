@@ -1,19 +1,19 @@
 view: cast_crew {
   sql_table_name: mak_movies.cast_crew ;;
+  view_label: "Cast and Crew"
 
-  dimension: category {
+# VISIBLE
+
+  dimension: job {
     type: string
     sql: ${TABLE}.category ;;
   }
 
+# INVISIBLE
+
   dimension: characters {
     type: string
     sql: ${TABLE}.characters ;;
-  }
-
-  dimension: job {
-    type: string
-    sql: ${TABLE}.job ;;
   }
 
   dimension: nconst {

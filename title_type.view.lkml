@@ -1,6 +1,16 @@
 view: title_type {
   sql_table_name: mak_movies.title_type ;;
 
+# VISIBILE
+
+  dimension: title_type {
+    view_label: "Movies"
+    type: string
+    sql: ${TABLE}.title_type ;;
+  }
+
+# INVISIBLE
+
   dimension: end_year {
     type: string
     sql: ${TABLE}.end_year ;;
@@ -40,12 +50,6 @@ view: title_type {
   dimension: title {
     type: string
     sql: ${TABLE}.title ;;
-  }
-
-  dimension: title_type {
-    view_label: "Movies"
-    type: string
-    sql: ${TABLE}.title_type ;;
   }
 
   measure: count {

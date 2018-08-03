@@ -8,10 +8,19 @@ view: collections {
     sql: ${TABLE}.id ;;
   }
 
+# VISIBLE
+
   dimension: collection {
     type: string
     sql: ${TABLE}.collection ;;
   }
+
+  measure: count {
+    type: count
+    drill_fields: [movies.title]
+  }
+
+# INVISIBLE
 
   dimension: movieid {
     hidden: yes
@@ -20,8 +29,4 @@ view: collections {
     sql: ${TABLE}.movieid ;;
   }
 
-  measure: count {
-    type: count
-    drill_fields: [movies.title]
-  }
 }

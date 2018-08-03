@@ -9,12 +9,7 @@ view: production_companies {
     sql: ${TABLE}.id ;;
   }
 
-  dimension: movieid {
-    hidden: yes
-    type: number
-    value_format_name: id
-    sql: ${TABLE}.movieid ;;
-  }
+# VISIBLE
 
   dimension: production_company {
     type: string
@@ -22,8 +17,17 @@ view: production_companies {
   }
 
   measure: count {
-    hidden: yes
     type: count
     drill_fields: [id]
   }
+
+# INVISBLE
+
+  dimension: movieid {
+    hidden: yes
+    type: number
+    value_format_name: id
+    sql: ${TABLE}.movieid ;;
+  }
+
 }

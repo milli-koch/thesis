@@ -16,8 +16,4 @@ view: crew {
     sql: ${TABLE}.string_field_2 ;;
   }
 
-  measure: count {
-    type: count
-    drill_fields: []
-  }
 }

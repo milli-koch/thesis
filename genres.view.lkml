@@ -8,10 +8,19 @@ view: genres {
     sql: ${TABLE}.id ;;
   }
 
+# VISIBLE
+
   dimension: genre {
     type: string
     sql: ${TABLE}.genre ;;
   }
+
+  measure: count {
+    type: count
+    drill_fields: [movies.title]
+  }
+
+# INVISIBLE
 
   dimension: movieid {
     hidden: yes
@@ -20,8 +29,4 @@ view: genres {
     sql: ${TABLE}.movieid ;;
   }
 
-  measure: count {
-    type: count
-    drill_fields: [id]
-  }
 }

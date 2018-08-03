@@ -10,11 +10,6 @@ view: directors {
        ;;
   }
 
-  measure: count {
-    type: count
-    drill_fields: [detail*]
-  }
-
   dimension: prim_key {
     primary_key: yes
     hidden: yes
@@ -22,11 +17,7 @@ view: directors {
     sql: ${TABLE}.id ;;
   }
 
-  dimension: director_id {
-    hidden: yes
-    type: string
-    sql: ${TABLE}.director_id ;;
-  }
+# VISIBLE
 
   dimension: name {
     type: string
@@ -48,13 +39,29 @@ view: directors {
     sql: ${TABLE}.death_year ;;
   }
 
+  dimension: age {
+    type: number
+    sql: cast(${movies.release_year} as int64) - ${birth_year} ;;
+  }
+
+  measure: count {
+    type: count
+    drill_fields: [directors.name, movies.title]
+  }
+
+
+# INVISIBLE
+
+  dimension: director_id {
+    hidden: yes
+    type: string
+    sql: ${TABLE}.director_id ;;
+  }
+
   dimension: movie_id {
     hidden: yes
     type: string
     sql: ${TABLE}.movie_id ;;
   }
 
-  set: detail {
-    fields: [name, movies.title]
-  }
 }

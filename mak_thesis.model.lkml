@@ -86,5 +86,16 @@ explore: movies {
     type: left_outer
   }
 
+  join: cast_crew {
+    sql_on: ${movies.imdbid} = ${cast_crew.tconst} ;;
+    relationship: many_to_many
+    fields: [cast_crew.job]
+  }
+
+  join: names {
+    sql_on: ${cast_crew.nconst} = ${names.nconst};;
+    relationship: one_to_one
+    fields: [names.name, names.nconst, names.birth_year, names.death_year]
+  }
 
 }
