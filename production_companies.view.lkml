@@ -1,5 +1,6 @@
-view: keywords {
-  sql_table_name: mak_movies.keywords_clean ;;
+view: production_companies {
+  sql_table_name: mak_movies.production_companies ;;
+  view_label: "Movies"
 
   dimension: id {
     primary_key: yes
@@ -10,17 +11,17 @@ view: keywords {
 
 # VISIBLE
 
-  dimension: keyword {
+  dimension: production_company {
     type: string
-    sql: ${TABLE}.keyword ;;
+    sql: ${TABLE}.production_company ;;
   }
 
   measure: count {
     type: count
-    drill_fields: [movies.title]
+    drill_fields: [id]
   }
 
-# INVISIBLE
+# INVISBLE
 
   dimension: movieid {
     hidden: yes

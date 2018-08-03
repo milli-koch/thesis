@@ -1,5 +1,5 @@
-view: keywords {
-  sql_table_name: mak_movies.keywords_clean ;;
+view: collections {
+  sql_table_name: mak_movies.collections ;;
 
   dimension: id {
     primary_key: yes
@@ -10,9 +10,9 @@ view: keywords {
 
 # VISIBLE
 
-  dimension: keyword {
+  dimension: collection {
     type: string
-    sql: ${TABLE}.keyword ;;
+    sql: ${TABLE}.collection ;;
   }
 
   measure: count {

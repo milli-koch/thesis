@@ -1,5 +1,6 @@
-view: keywords {
-  sql_table_name: mak_movies.keywords_clean ;;
+view: spoken_languages {
+  sql_table_name: mak_movies.spoken_languages ;;
+  view_label: "Movies"
 
   dimension: id {
     primary_key: yes
@@ -8,19 +9,19 @@ view: keywords {
     sql: ${TABLE}.id ;;
   }
 
-# VISIBLE
+# VISBIBLE
 
-  dimension: keyword {
+  dimension: spoken_language {
     type: string
-    sql: ${TABLE}.keyword ;;
+    sql: ${TABLE}.spoken_language ;;
   }
 
-  measure: count {
+  measure: language_count {
     type: count
     drill_fields: [movies.title]
   }
 
-# INVISIBLE
+# INVISBLE
 
   dimension: movieid {
     hidden: yes
