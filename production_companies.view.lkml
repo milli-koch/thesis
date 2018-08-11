@@ -1,6 +1,5 @@
 view: production_companies {
   sql_table_name: mak_movies.production_companies ;;
-  view_label: "Movies"
 
   dimension: id {
     primary_key: yes
@@ -18,7 +17,7 @@ view: production_companies {
 
   measure: count {
     type: count
-    drill_fields: [id]
+    drill_fields: [movies.title, production_company]
   }
 
 # INVISBLE

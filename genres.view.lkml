@@ -17,7 +17,7 @@ view: genres {
 
   measure: count {
     type: count
-    drill_fields: [movies.title]
+    drill_fields: [movies.title, genre]
   }
 
 # INVISIBLE

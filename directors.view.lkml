@@ -41,7 +41,12 @@ view: directors {
 
   dimension: age {
     type: number
-    sql: cast(${movies.release_year} as int64) - ${birth_year} ;;
+    sql: ${movies.release_year} - ${birth_year} ;;
+  }
+
+  measure: years_active {
+    type: number
+    sql: ${movies.release_year} - min(${movies.release_year}) ;;
   }
 
   measure: count {

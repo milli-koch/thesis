@@ -11,13 +11,22 @@ view: imdb_ratings {
 
 # VISIBLE
 
-  measure: imdb_vote_count {
-    type: sum
-    sql: ${vote_count} ;;
-    drill_fields: [movies.title, imdb_rating]
+  dimension: ratings_tier {
+    type: tier
+    tiers: [1,2,3,4,5,6,7,8,9]
+    style: integer
+    sql: ${avg_rating} ;;
+  }
+
+  dimension: vote_count {
+    label: "IMDb Vote Count"
+    view_label: "Ratings"
+    type: number
+    sql: ${TABLE}.vote_count ;;
   }
 
   parameter: rating_selector {
+    description: "Use with Ratings measure"
     type: string
     allowed_value: {
       label: "IMDb Rating"
@@ -34,6 +43,7 @@ view: imdb_ratings {
   }
 
   measure: rating {
+    description: "Use with Rating Selector"
     label_from_parameter: rating_selector
     type: number
     value_format_name: decimal_2
@@ -65,10 +75,11 @@ view: imdb_ratings {
     sql: ${avg_rating} ;;
   }
 
-  dimension: vote_count {
-    hidden: yes
-    type: number
-    sql: ${TABLE}.vote_count ;;
-  }
+#  measure: imdb_vote_count {
+#     type: sum
+#     sql: ${vote_count} ;;
+#     drill_fields: [movies.title, imdb_rating]
+#   }
+
 
 }

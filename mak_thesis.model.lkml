@@ -2,18 +2,26 @@ connection: "lookerdata_standard_sql"
 
 include: "*.view"
 
-datagroup: mak_thesis_default_datagroup {
+datagroup: mak_datagroup {
   max_cache_age: "1 hour"
   sql_trigger: SELECT CURDATE() ;;
 }
 
-persist_with: mak_thesis_default_datagroup
+persist_with: mak_datagroup
 
-explore: movies {
+explore: movies{
   always_filter: {
     filters: {
       field: title_type.title_type
       value: "movie"
+    }
+    filters: {
+      field: imdb_ratings.vote_count
+      value: "> 5000"
+    }
+    filters: {
+      field: movies.vote_count
+      value: ">1000"
     }
   }
 
@@ -95,7 +103,7 @@ explore: movies {
   join: names {
     sql_on: ${cast_crew.nconst} = ${names.nconst};;
     relationship: one_to_one
-    fields: [names.name, names.nconst, names.birth_year, names.death_year]
+    fields: [names.name, names.nconst, names.birth_year, names.death_year, names.count]
   }
 
 }

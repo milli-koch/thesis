@@ -8,6 +8,12 @@ view: movies {
     sql: ${TABLE}.id ;;
   }
 
+  measure: count_movies {
+    type: count_distinct
+    sql: ${title} ;;
+    drill_fields: [title]
+  }
+
 # VISIBLE
 
   dimension: budget {
@@ -36,15 +42,21 @@ view: movies {
     timeframes: [
       raw,
       date,
+      day_of_week,
       week,
-      month,
       year,
-      day_of_year,
       month_name,
-      day_of_week
     ]
     convert_tz: no
+    datatype: date
     sql: ${TABLE}.release_date ;;
+  }
+
+  dimension: decade {
+    type: tier
+    tiers: [1900,1910,1920,1930,1940,1950,1960,1970,1980,1990,2000,2010]
+    style: integer
+    sql: ${release_year} ;;
   }
 
   dimension: revenue {
@@ -53,13 +65,14 @@ view: movies {
   }
 
   dimension: runtime {
+    description: "In Minutes"
     type: number
     sql: ${TABLE}.runtime ;;
   }
 
   dimension: runtime_tier {
     type: tier
-    tiers: [60, 90, 120]
+    tiers: [60, 90, 120, 150]
     style: integer
     sql: ${runtime} ;;
   }
@@ -81,17 +94,26 @@ view: movies {
       label: "{{ ['movies.homepage_link'] }}"
       url: "{{ ['movies.homepage'] }}"
     }
-    link: {
-      label: "TMDb"
-      url: "https://www.themoviedb.org/movie/{{ ['movies.id'] }}"
-    }
   }
 
-  measure: tmdb_vote_count {
+  dimension: popularity {
+    type: number
+    sql: ${TABLE}.popularity ;;
+    value_format_name: decimal_2
+  }
+
+  dimension: popularity_tier{
+    type: tier
+    tiers: [0,5,10,15,20,25,30,35,40,45,50,100,150,200,250,300,350,400,450,500,550]
+    style: interval
+    sql: ${popularity} ;;
+  }
+
+  dimension: vote_count {
+    label: "TMDb Vote Count"
     view_label: "Ratings"
-    type: sum
-    sql: ${vote_count} ;;
-    drill_fields: [title, tmdb_rating]
+    type: number
+    sql: ${TABLE}.vote_count ;;
   }
 
   measure: count {
@@ -107,6 +129,7 @@ view: movies {
   }
 
   measure: average_popularity {
+    description: "TMDb Popularity Score"
     type: average
     sql: ${popularity} ;;
     value_format_name: decimal_2
@@ -165,12 +188,6 @@ view: movies {
     sql: (${imdb_ratings.imdb_rating}+${movies.tmdb_rating})/2 ;;
   }
 
-  dimension: vote_count {
-    hidden: yes
-    type: number
-    sql: ${TABLE}.vote_count ;;
-  }
-
   dimension: status {
     hidden: yes
     type: string
@@ -189,11 +206,12 @@ view: movies {
     sql: ${TABLE}.imdbid ;;
   }
 
-  dimension: popularity {
-    hidden: yes
-    type: number
-    sql: ${TABLE}.popularity ;;
-  }
+#   measure: tmdb_vote_count {
+#     view_label: "Ratings"
+#     type: sum
+#     sql: ${vote_count} ;;
+#     drill_fields: [title, tmdb_rating]
+#   }
 }
 
 view: movies_full {

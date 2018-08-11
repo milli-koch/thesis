@@ -21,6 +21,11 @@ view: names {
     }
   }
 
+  measure: count {
+    type: count
+    drill_fields: [name]
+  }
+
 # INVISIBLE
 
   dimension: birth_year {
@@ -36,11 +41,6 @@ view: names {
   dimension: primary_profession {
     type: string
     sql: ${TABLE}.primary_profession ;;
-  }
-
-  measure: count {
-    type: count
-    drill_fields: [name]
   }
 
 #   dimension: known_for {
