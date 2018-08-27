@@ -1,6 +1,6 @@
 view: imdb_ratings {
-  sql_table_name: mak_movies.imdb_ratings ;;
   view_label: "Ratings"
+  sql_table_name: imdb_rating ;;
 
   dimension: tconst {
     primary_key: yes
@@ -15,7 +15,7 @@ view: imdb_ratings {
     type: tier
     tiers: [1,2,3,4,5,6,7,8,9]
     style: integer
-    sql: ${avg_rating} ;;
+#     sql: ${rating_trunc} ;;
   }
 
   dimension: vote_count {
@@ -74,12 +74,5 @@ view: imdb_ratings {
     type: average
     sql: ${avg_rating} ;;
   }
-
-#  measure: imdb_vote_count {
-#     type: sum
-#     sql: ${vote_count} ;;
-#     drill_fields: [movies.title, imdb_rating]
-#   }
-
 
 }

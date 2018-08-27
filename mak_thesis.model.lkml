@@ -10,6 +10,7 @@ datagroup: mak_datagroup {
 persist_with: mak_datagroup
 
 explore: movies{
+  persist_with: mak_datagroup
   always_filter: {
     filters: {
       field: title_type.title_type
@@ -62,9 +63,15 @@ explore: movies{
     type: left_outer
   }
 
+  join: director_movie_mapping {
+    sql_on: ${movies.imdbid} = ${director_movie_mapping.imdbid} ;;
+    relationship:one_to_one
+    fields: []
+    }
+
   join: directors {
-    sql_on: ${movies.imdbid} = ${directors.movie_id} ;;
-    relationship: many_to_many
+    sql_on: ${director_movie_mapping.director_id} = ${directors.director_id} ;;
+    relationship: many_to_one
     type: left_outer
   }
 
@@ -82,16 +89,9 @@ explore: movies{
 
   join: title_type {
     sql_on: ${movies.imdbid} = ${title_type.tconst} ;;
-    relationship: one_to_one
+    relationship: one_to_many
     type: left_outer
     fields: [title_type.title_type]
-  }
-
-  join: director_facts {
-    sql_on: ${movies.imdbid} = ${director_facts.movie_id}
-    and ${directors.name} = ${director_facts.name};;
-    relationship: many_to_many
-    type: left_outer
   }
 
   join: cast_crew {

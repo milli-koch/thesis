@@ -48,8 +48,7 @@ view: movies {
       month_name,
     ]
     convert_tz: no
-    datatype: date
-    sql: ${TABLE}.release_date ;;
+    sql: cast(${TABLE}.release_date as timestamp) ;;
   }
 
   dimension: decade {
@@ -62,6 +61,7 @@ view: movies {
   dimension: revenue {
     type: number
     sql: ${TABLE}.revenue ;;
+    value_format_name: usd
   }
 
   dimension: runtime {
@@ -96,6 +96,45 @@ view: movies {
     }
   }
 
+  dimension: poster {
+    sql:${poster_path};;
+    html:
+    <a href="https://www.imdb.com/title/{{ ['movies.imdbid'] }}">
+          <img src="http://image.tmdb.org/t/p/w185/{{ value }}" />
+          </a>;;
+#     link: {
+#       label: "IMDb"
+#       url:"https://www.imdb.com/title/{{ ['movies.imdbid'] }}"
+#       icon_url: "https://imdb.com/favicon.ico"
+#     }
+#     link: {
+#       label: "{{ ['movies.homepage_link'] }}"
+#       url: "{{ ['movies.homepage'] }}"
+#     }
+  }
+
+  dimension: title_dropdown {
+    type: string
+    sql: ${title} ;;
+    link: {
+      label: "Dashboard"
+      url: "https://dcl.dev.looker.com/dashboards/194?Director={{ _filters['directors.name'] | url_encode }}"
+    }
+    link: {
+      label: "{{ ['movies.homepage_link'] }}"
+      url: "{{ ['movies.homepage'] }}"
+    }
+    html:
+          <div style="width:100%; text-align: centre;"> <details>
+          <summary style="outline:none">{{ title._linked_value }}</summary>
+          <b>Director:<b> {{ directors.name._linked_value }}
+
+          </details>
+          </div>
+          ;;
+  }
+
+
   dimension: popularity {
     type: number
     sql: ${TABLE}.popularity ;;
@@ -115,11 +154,11 @@ view: movies {
     type: number
     sql: ${TABLE}.vote_count ;;
   }
-
-  measure: count {
-    type: count
-    drill_fields: [title]
-  }
+#
+#   measure: count {
+#     type: count
+#     drill_fields: [title]
+#   }
 
   measure: average_budget {
     type: average
@@ -156,6 +195,42 @@ view: movies {
     value_format_name: decimal_2
     drill_fields: [title, average_runtime]
   }
+
+  parameter: metric_selector {
+    description: "Use with Metric measure"
+    type: string
+    allowed_value: {
+      value: "total_revenue"
+      label: "Total Revenue"
+    }
+    allowed_value: {
+      value: "average_revenue"
+      label: "Average Revenue"
+    }
+    allowed_value: {
+      value: "Average Budget"
+    }
+  }
+
+  measure: metric {
+    description: "Use with Metric Selector"
+    label_from_parameter: metric_selector
+    type: number
+    value_format_name: usd
+    sql:
+      CASE
+      WHEN {% parameter metric_selector %} = 'average_budget' THEN
+          ${movies.average_budget}
+        WHEN {% parameter metric_selector %} = 'average_revenue' THEN
+          ${average_revenue}
+          WHEN {% parameter metric_selector %} = 'total_revenue' THEN
+          ${movies.total_revenue}
+        ELSE
+          NULL
+      END ;;
+      drill_fields: [title, metric]
+  }
+
 
 # INVISIBLE
 
@@ -206,6 +281,12 @@ view: movies {
     sql: ${TABLE}.imdbid ;;
   }
 
+  dimension: poster_path {
+    hidden: yes
+    type: string
+    sql: ${TABLE}.poster_path ;;
+  }
+
 #   measure: tmdb_vote_count {
 #     view_label: "Ratings"
 #     type: sum
@@ -225,10 +306,6 @@ view: movies_full {
   dimension: spoken_languages {
     type: string
     sql: ${TABLE}.spoken_languages ;;
-  }
-  dimension: poster_path {
-    type: string
-    sql: ${TABLE}.poster_path ;;
   }
 
   dimension: production_companies {

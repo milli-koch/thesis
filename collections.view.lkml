@@ -12,8 +12,9 @@ view: collections {
 
   dimension: collection {
     type: string
-    sql: ${TABLE}.collection ;;
+    sql: rtrim(${TABLE}.collection, "Collection") ;;
   }
+
 
   measure: count {
     type: count
