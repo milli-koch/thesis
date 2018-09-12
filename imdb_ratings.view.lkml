@@ -1,6 +1,6 @@
 view: imdb_ratings {
   view_label: "Ratings"
-  sql_table_name: imdb_rating ;;
+  sql_table_name: mak_movies.imdb_ratings ;;
 
   dimension: tconst {
     primary_key: yes
@@ -11,12 +11,12 @@ view: imdb_ratings {
 
 # VISIBLE
 
-  dimension: ratings_tier {
-    type: tier
-    tiers: [1,2,3,4,5,6,7,8,9]
-    style: integer
-#     sql: ${rating_trunc} ;;
-  }
+#   dimension: ratings_tier {
+#     type: tier
+#     tiers: [1,2,3,4,5,6,7,8,9]
+#     style: interval
+#     sql: ${avg_rating} ;;
+#   }
 
   dimension: vote_count {
     label: "IMDb Vote Count"
@@ -25,9 +25,18 @@ view: imdb_ratings {
     sql: ${TABLE}.vote_count ;;
   }
 
+  measure: total_votes {
+    type: sum
+    sql: ${vote_count} + ${movies.vote_count};;
+  }
+
   parameter: rating_selector {
     description: "Use with Ratings measure"
     type: string
+    allowed_value: {
+      label: "Average Rating"
+      value: "average_rating"
+    }
     allowed_value: {
       label: "IMDb Rating"
       value: "imdb_rating"
@@ -35,10 +44,6 @@ view: imdb_ratings {
     allowed_value: {
       label: "TMDb Rating"
       value: "tmdb_rating"
-    }
-    allowed_value: {
-      label: "Average Rating"
-      value: "average_rating"
     }
   }
 

@@ -102,6 +102,15 @@ view: movies {
     <a href="https://www.imdb.com/title/{{ ['movies.imdbid'] }}">
           <img src="http://image.tmdb.org/t/p/w185/{{ value }}" />
           </a>;;
+    link: {
+      label: "IMDb"
+      url:"https://www.imdb.com/title/{{ ['movies.imdbid'] }}"
+      icon_url: "https://imdb.com/favicon.ico"
+    }
+    link: {
+      label: "{{ ['movies.homepage_link'] }}"
+      url: "{{ ['movies.homepage'] }}"
+    }
 #     link: {
 #       label: "IMDb"
 #       url:"https://www.imdb.com/title/{{ ['movies.imdbid'] }}"
@@ -127,7 +136,11 @@ view: movies {
     html:
           <div style="width:100%; text-align: centre;"> <details>
           <summary style="outline:none">{{ title._linked_value }}</summary>
-          <b>Director:<b> {{ directors.name._linked_value }}
+          <b>Year:<b> {{ movies.release_year._linked_value }}
+          <br>
+          <b>Type:<b> {{ title_type.title_type._linked_value }}
+          <br>
+          <b>Age:<b> {{ directors.age._linked_value }}
 
           </details>
           </div>
@@ -154,11 +167,6 @@ view: movies {
     type: number
     sql: ${TABLE}.vote_count ;;
   }
-#
-#   measure: count {
-#     type: count
-#     drill_fields: [title]
-#   }
 
   measure: average_budget {
     type: average
@@ -258,7 +266,7 @@ view: movies {
   }
 
   measure: average_rating {
-    hidden: yes
+    hidden: no
     type: number
     sql: (${imdb_ratings.imdb_rating}+${movies.tmdb_rating})/2 ;;
   }
@@ -286,13 +294,6 @@ view: movies {
     type: string
     sql: ${TABLE}.poster_path ;;
   }
-
-#   measure: tmdb_vote_count {
-#     view_label: "Ratings"
-#     type: sum
-#     sql: ${vote_count} ;;
-#     drill_fields: [title, tmdb_rating]
-#   }
 }
 
 view: movies_full {

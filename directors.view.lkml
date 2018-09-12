@@ -6,7 +6,7 @@ view: directors {
       director_id,
       names.name as name,
       case when birth_year like '%N' then null else birth_year end as birth_year,
-      death_year,
+      case when death_year like '%N' then null else death_year end as death_year,
       min(movies.release_date) as first_movie
       from `lookerdata.mak_movies.movies` as movies
       join `lookerdata.mak_movies.directors` as directors
@@ -40,6 +40,7 @@ view: directors {
   dimension_group: first_movie {
     type: time
     timeframes: [
+      raw,
       date,
       year,
       month
@@ -54,22 +55,25 @@ view: directors {
 
   dimension: years_active {
     type: number
-    sql: date_diff(${movies.release_date}, ${first_movie_date}, year) ;;
+    sql: case when
+    ${death_year} is null then
+    extract (year from current_date()) - extract(year from ${first_movie_date})
+    else cast(${death_year} as int64) - ${first_movie_year} end;;
   }
 
   dimension: birth_year {
     type: number
-    sql: cast(${TABLE}.birth_year as int64);;
+    sql: ${TABLE}.birth_year;;
     }
 
   dimension: death_year {
-    type: string
-    sql: ${TABLE}.death_year ;;
+    type: number
+    sql: ${TABLE}.death_year;;
   }
 
   dimension: age {
     type: number
-    sql: ${movies.release_year} - ${birth_year} ;;
+    sql: ${movies.release_year} - cast(${birth_year} as int64) ;;
   }
 
   dimension: age_tier {

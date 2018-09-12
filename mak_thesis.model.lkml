@@ -106,4 +106,11 @@ explore: movies{
     fields: [names.name, names.nconst, names.birth_year, names.death_year, names.count]
   }
 
+  join: average_rating {
+    fields: [average_rating.ratings_tier]
+    sql_on: ${movies.imdbid} = ${average_rating.movieid} ;;
+    relationship: one_to_one
+    type: left_outer
+  }
+
 }
