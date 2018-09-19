@@ -1,4 +1,4 @@
-view: average_rating {
+view: ratings_tier {
   view_label: "Ratings"
   derived_table: {
     sql: select imdb_ratings.tconst,

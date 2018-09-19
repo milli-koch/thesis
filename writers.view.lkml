@@ -38,6 +38,11 @@ view: writers {
     sql: cast(${movies.release_year} as int64) - ${birth_year} ;;
   }
 
+  measure: writers {
+    type: list
+    list_field: name
+  }
+
   measure: count {
     type: count
     drill_fields: [name, movies.title]

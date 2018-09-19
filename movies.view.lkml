@@ -22,6 +22,32 @@ view: movies {
     value_format_name: usd
   }
 
+#   dimension: budget_tier {
+#     type: tier
+#     tiers: [10000000,40000000,100000000]
+#     style: integer
+#     sql: ${budget} ;;
+#     value_format_name: usd
+#   }
+
+  dimension: budget_category {
+    case: {
+      when: {
+        sql: ${budget} < 10000000;;
+        label: "Ultra Low Budget"
+      }
+      when: {
+      sql: ${budget} < 40000000;;
+      label: "Low Budget"
+    }
+    when: {
+      sql: ${budget} < 100000000;;
+      label: "Medium Budget"
+    }
+    else: "High Budget"
+  }
+  }
+
   dimension: original_language {
     type: string
     sql: ${TABLE}.original_language ;;
@@ -266,7 +292,7 @@ view: movies {
   }
 
   measure: average_rating {
-    hidden: no
+    hidden: yes
     type: number
     sql: (${imdb_ratings.imdb_rating}+${movies.tmdb_rating})/2 ;;
   }

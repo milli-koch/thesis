@@ -53,12 +53,34 @@ view: directors {
     sql: ${movies.release_year} = ${first_movie_year};;
   }
 
-  dimension: years_active {
+  dimension: current_years_active {
     type: number
     sql: case when
     ${death_year} is null then
     extract (year from current_date()) - extract(year from ${first_movie_date})
     else cast(${death_year} as int64) - ${first_movie_year} end;;
+  }
+
+  dimension: years_active {
+    type: number
+    sql: ${movies.release_year} - extract(year from ${first_movie_date});;
+  }
+
+  dimension: current_years_active_tier {
+    type: tier
+    tiers: [10,20,30,40,50,60,70,80]
+    style: integer
+    sql: case when
+    ${death_year} is null then
+    ${current_years_active}
+    else null end;;
+  }
+
+  dimension: years_active_tier {
+    type: tier
+    tiers: [5,10,15,20,25,30,35,40,45]
+    style: integer
+    sql: ${years_active} ;;
   }
 
   dimension: birth_year {
@@ -76,17 +98,52 @@ view: directors {
     sql: ${movies.release_year} - cast(${birth_year} as int64) ;;
   }
 
+  dimension: current_age {
+    type: number
+    sql: case when
+    ${death_year} is null then
+    extract (year from current_date()) - cast(${birth_year} as int64)
+    else null end;;
+  }
+
+  dimension: current_age_tier {
+    type: tier
+    tiers: [20,30,40,50,60,70,80,90,100]
+    style: integer
+    sql: ${current_age} ;;
+  }
+
   dimension: age_tier {
     type: tier
     tiers: [20,30,40,50,60,70,80,90,100]
-    style: interval
+    style: integer
     sql: ${age} ;;
   }
 
+#   measure: selfwritten {
+#     type: yesno
+#     sql: ${writers.writers} like '%${name}%' ;;
+#   }
 
   measure: count {
     type: count
     drill_fields: [directors.name, movies.title]
+  }
+
+  parameter: director_select {
+    type: string
+    suggest_dimension: name
+  }
+
+  dimension: selected_director_flag {
+    type: number
+    sql:  (case when {% parameter director_select %} = ${name} then 1 else 0 end) ;;
+  }
+
+  measure: top_5_directors {
+    description: "Top 5 Directors Based on Average IMDB Rating"
+    type: string
+    sql: pairs_sum_top_n(ARRAY_AGG(STRUCT(${name} as key, ${imdb_ratings.avg_rating} as value)), 5) ;;
   }
 
 # INVISIBLE
