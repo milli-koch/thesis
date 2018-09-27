@@ -11,13 +11,6 @@ view: imdb_ratings {
 
 # VISIBLE
 
-#   dimension: ratings_tier {
-#     type: tier
-#     tiers: [1,2,3,4,5,6,7,8,9]
-#     style: interval
-#     sql: ${avg_rating} ;;
-#   }
-
   dimension: vote_count {
     label: "IMDb Vote Count"
     view_label: "Ratings"
@@ -33,6 +26,10 @@ view: imdb_ratings {
   parameter: rating_selector {
     description: "Use with Ratings measure"
     type: string
+    allowed_value: {
+      label: "Curved Rating"
+      value: "curved_rating"
+    }
     allowed_value: {
       label: "Average Rating"
       value: "average_rating"
@@ -54,8 +51,10 @@ view: imdb_ratings {
     value_format_name: decimal_2
     sql:
       CASE
-      WHEN {% parameter rating_selector %} = 'average_rating' THEN
-          ${movies.average_rating}
+        WHEN {% parameter rating_selector %} = 'curved_rating' THEN
+          ${ratings_tier.average_rating}
+        WHEN {% parameter rating_selector %} = 'average_rating' THEN
+          ${ratings_tier.avg_rating}
         WHEN {% parameter rating_selector %} = 'imdb_rating' THEN
           ${imdb_rating}
         WHEN {% parameter rating_selector %} = 'tmdb_rating' THEN

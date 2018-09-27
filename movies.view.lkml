@@ -22,13 +22,13 @@ view: movies {
     value_format_name: usd
   }
 
-#   dimension: budget_tier {
-#     type: tier
-#     tiers: [10000000,40000000,100000000]
-#     style: integer
-#     sql: ${budget} ;;
-#     value_format_name: usd
-#   }
+  dimension: budget_tier {
+    type: tier
+    tiers: [10000000,40000000,100000000]
+    style: integer
+    sql: ${budget} ;;
+    value_format_name: usd
+  }
 
   dimension: budget_category {
     case: {
@@ -84,6 +84,14 @@ view: movies {
     sql: ${release_year} ;;
   }
 
+  dimension: 5_years {
+    type: tier
+    tiers: [1910,1915,1920,1925,1930,1935,1940,1945,1950,1955,1960,1965,1970,1975,1980,1985,1990,1995,2000,2005,2010,2015]
+    style: integer
+    sql: ${release_year} ;;
+  }
+
+
   dimension: revenue {
     type: number
     sql: ${TABLE}.revenue ;;
@@ -128,32 +136,15 @@ view: movies {
     <a href="https://www.imdb.com/title/{{ ['movies.imdbid'] }}">
           <img src="http://image.tmdb.org/t/p/w185/{{ value }}" />
           </a>;;
-    link: {
-      label: "IMDb"
-      url:"https://www.imdb.com/title/{{ ['movies.imdbid'] }}"
-      icon_url: "https://imdb.com/favicon.ico"
-    }
-    link: {
-      label: "{{ ['movies.homepage_link'] }}"
-      url: "{{ ['movies.homepage'] }}"
-    }
-#     link: {
-#       label: "IMDb"
-#       url:"https://www.imdb.com/title/{{ ['movies.imdbid'] }}"
-#       icon_url: "https://imdb.com/favicon.ico"
-#     }
-#     link: {
-#       label: "{{ ['movies.homepage_link'] }}"
-#       url: "{{ ['movies.homepage'] }}"
-#     }
   }
 
   dimension: title_dropdown {
     type: string
     sql: ${title} ;;
     link: {
-      label: "Dashboard"
-      url: "https://dcl.dev.looker.com/dashboards/194?Director={{ _filters['directors.name'] | url_encode }}"
+      label: "IMDb"
+      url:"https://www.imdb.com/title/{{ ['movies.imdbid'] }}"
+      icon_url: "https://imdb.com/favicon.ico"
     }
     link: {
       label: "{{ ['movies.homepage_link'] }}"
@@ -291,11 +282,11 @@ view: movies {
     sql: ${vote_avg} ;;
   }
 
-  measure: average_rating {
-    hidden: yes
-    type: number
-    sql: (${imdb_ratings.imdb_rating}+${movies.tmdb_rating})/2 ;;
-  }
+#   measure: average_rating {
+#     hidden: yes
+#     type: number
+#     sql: (${imdb_ratings.imdb_rating}+${movies.tmdb_rating})/2 ;;
+#   }
 
   dimension: status {
     hidden: yes

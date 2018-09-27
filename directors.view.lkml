@@ -2,11 +2,11 @@ view: directors {
   derived_table: {
     sql:
     SELECT
-      row_number() over (order by name) as id,
+      row_number() over (order by names.name) as id,
       director_id,
-      names.name as name,
-      case when birth_year like '%N' then null else birth_year end as birth_year,
-      case when death_year like '%N' then null else death_year end as death_year,
+      names.name as director,
+      case when names.birth_year like '%N' then null else names.birth_year end as birth_year,
+      case when names.death_year like '%N' then null else names.death_year end as death_year,
       min(movies.release_date) as first_movie
       from `lookerdata.mak_movies.movies` as movies
       join `lookerdata.mak_movies.directors` as directors
@@ -29,7 +29,7 @@ view: directors {
 
   dimension: name {
     type: string
-    sql: ${TABLE}.name ;;
+    sql: ${TABLE}.director ;;
     link: {
       label: "IMDb"
       url: "https://www.imdb.com/name/{{ ['director_id'] }}"
@@ -120,9 +120,13 @@ view: directors {
     sql: ${age} ;;
   }
 
+#   dimension: selfwritten {
+#     sql: ${TABLE}.selfwritten ;;
+#   }
+
 #   measure: selfwritten {
 #     type: yesno
-#     sql: ${writers.writers} like '%${name}%' ;;
+#     sql: STRING_AGG(${writers.name}, '|RECORD|') like CONCAT('%', ${directors.name}, '%') ;;
 #   }
 
   measure: count {
@@ -130,20 +134,25 @@ view: directors {
     drill_fields: [directors.name, movies.title]
   }
 
-  parameter: director_select {
-    type: string
-    suggest_dimension: name
-  }
-
-  dimension: selected_director_flag {
-    type: number
-    sql:  (case when {% parameter director_select %} = ${name} then 1 else 0 end) ;;
-  }
+#   parameter: selfwritten_select {
+#     type: string
+#   }
+#
+#   measure: selfwritten_flag {
+#     type: number
+#     sql:  (case when cast(${selfwritten} as string) = "Yes" then 1 else 0 end) ;;
+#   }
 
   measure: top_5_directors {
     description: "Top 5 Directors Based on Average IMDB Rating"
     type: string
     sql: pairs_sum_top_n(ARRAY_AGG(STRUCT(${name} as key, ${imdb_ratings.avg_rating} as value)), 5) ;;
+#     link: {
+#       label: "IMDb"
+#       url: "https://www.imdb.com/name/{{ ['director_id'] }}"
+#       icon_url: "https://imdb.com/favicon.ico"
+#     }
+    drill_fields: [directors.name, imdb_ratings.avg_rating]
   }
 
 # INVISIBLE

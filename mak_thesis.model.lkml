@@ -76,6 +76,12 @@ explore: movies{
     relationship: many_to_one
     type: left_outer
   }
+#
+#   join: writer_movie_mapping {
+#     sql_on: ${movies.imdbid} = ${writer_movie_mapping.imdbid} ;;
+#     relationship: one_to_one
+#     fields: []
+#   }
 
   join: writers {
     sql_on: ${movies.imdbid} = ${writers.movie_id} ;;
@@ -109,15 +115,14 @@ explore: movies{
   }
 
   join: ratings_tier {
-    fields: [ratings_tier.ratings_tier]
     sql_on: ${movies.imdbid} = ${ratings_tier.movieid} ;;
     relationship: one_to_one
     type: left_outer
   }
 }
 
-
 explore: custom_functions {
+  persist_with: mak_datagroup
   extension: required
   sql_preamble:
 
