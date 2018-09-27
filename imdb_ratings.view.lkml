@@ -1,6 +1,6 @@
 view: imdb_ratings {
-  sql_table_name: mak_movies.imdb_ratings ;;
   view_label: "Ratings"
+  sql_table_name: mak_movies.imdb_ratings ;;
 
   dimension: tconst {
     primary_key: yes
@@ -11,14 +11,29 @@ view: imdb_ratings {
 
 # VISIBLE
 
-  measure: imdb_vote_count {
+  dimension: vote_count {
+    label: "IMDb Vote Count"
+    view_label: "Ratings"
+    type: number
+    sql: ${TABLE}.vote_count ;;
+  }
+
+  measure: total_votes {
     type: sum
-    sql: ${vote_count} ;;
-    drill_fields: [movies.title, imdb_rating]
+    sql: ${vote_count} + ${movies.vote_count};;
   }
 
   parameter: rating_selector {
+    description: "Use with Ratings measure"
     type: string
+    allowed_value: {
+      label: "Curved Rating"
+      value: "curved_rating"
+    }
+    allowed_value: {
+      label: "Average Rating"
+      value: "average_rating"
+    }
     allowed_value: {
       label: "IMDb Rating"
       value: "imdb_rating"
@@ -27,20 +42,19 @@ view: imdb_ratings {
       label: "TMDb Rating"
       value: "tmdb_rating"
     }
-    allowed_value: {
-      label: "Average Rating"
-      value: "average_rating"
-    }
   }
 
   measure: rating {
+    description: "Use with Rating Selector"
     label_from_parameter: rating_selector
     type: number
     value_format_name: decimal_2
     sql:
       CASE
-      WHEN {% parameter rating_selector %} = 'average_rating' THEN
-          ${movies.average_rating}
+        WHEN {% parameter rating_selector %} = 'curved_rating' THEN
+          ${ratings_tier.average_rating}
+        WHEN {% parameter rating_selector %} = 'average_rating' THEN
+          ${ratings_tier.avg_rating}
         WHEN {% parameter rating_selector %} = 'imdb_rating' THEN
           ${imdb_rating}
         WHEN {% parameter rating_selector %} = 'tmdb_rating' THEN
@@ -63,12 +77,6 @@ view: imdb_ratings {
     hidden: yes
     type: average
     sql: ${avg_rating} ;;
-  }
-
-  dimension: vote_count {
-    hidden: yes
-    type: number
-    sql: ${TABLE}.vote_count ;;
   }
 
 }

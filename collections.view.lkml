@@ -12,12 +12,13 @@ view: collections {
 
   dimension: collection {
     type: string
-    sql: ${TABLE}.collection ;;
+    sql: rtrim(${TABLE}.collection, "Collection") ;;
   }
+
 
   measure: count {
     type: count
-    drill_fields: [movies.title]
+    drill_fields: [movies.title, collection]
   }
 
 # INVISIBLE

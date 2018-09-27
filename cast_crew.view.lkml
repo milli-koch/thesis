@@ -1,6 +1,10 @@
 view: cast_crew {
-  sql_table_name: mak_movies.cast_crew ;;
   view_label: "Cast and Crew"
+  derived_table: {
+    sql: select * from `lookerdata.mak_movies.cast_crew`
+    where category not in ("director", "writer");;
+    datagroup_trigger: mak_datagroup
+  }
 
 # VISIBLE
 
@@ -31,8 +35,4 @@ view: cast_crew {
     sql: ${TABLE}.tconst ;;
   }
 
-  measure: count {
-    type: count
-    drill_fields: []
-  }
 }
