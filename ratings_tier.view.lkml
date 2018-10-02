@@ -2,11 +2,11 @@ view: ratings_tier {
   view_label: "Ratings"
   derived_table: {
     sql: select movie_id, rating from
-(select imdb.tconst as movie_id, (AVG(imdb.avg_rating)+AVG(movies.vote_average))/2 as rating
-from mak_movies.movies  join mak_movies.imdb_ratings imdb
-on imdb.tconst = movies.imdbid
-group by 1)
-group by 1,2  ;;
+      (select imdb.tconst as movie_id, (avg(imdb.avg_rating)+avg(movies.vote_average))/2 as rating
+      from mak_movies.movies  join mak_movies.imdb_ratings imdb
+      on imdb.tconst = movies.imdbid
+      group by 1)
+      group by 1,2  ;;
   }
 
   dimension: movieid {

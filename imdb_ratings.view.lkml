@@ -62,7 +62,7 @@ view: imdb_ratings {
         ELSE
           NULL
       END ;;
-      drill_fields: [movies.title, directors.name, movies.average_rating, imdb_ratings.imdb_rating, movies.tmdb_rating]
+    drill_fields: [movies.title, directors.name, movies.average_rating, imdb_ratings.imdb_rating, movies.tmdb_rating]
   }
 
 # INVSIBLE

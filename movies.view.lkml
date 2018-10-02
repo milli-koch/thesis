@@ -37,15 +37,15 @@ view: movies {
         label: "Ultra Low Budget"
       }
       when: {
-      sql: ${budget} < 40000000;;
-      label: "Low Budget"
+        sql: ${budget} < 40000000;;
+        label: "Low Budget"
+      }
+      when: {
+        sql: ${budget} < 100000000;;
+        label: "Medium Budget"
+      }
+      else: "High Budget"
     }
-    when: {
-      sql: ${budget} < 100000000;;
-      label: "Medium Budget"
-    }
-    else: "High Budget"
-  }
   }
 
   dimension: original_language {
@@ -253,7 +253,7 @@ view: movies {
         ELSE
           NULL
       END ;;
-      drill_fields: [title, metric]
+    drill_fields: [title, metric]
   }
 
 

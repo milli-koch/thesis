@@ -134,6 +134,11 @@ view: directors {
     drill_fields: [directors.name, movies.title]
   }
 
+  measure: average_age {
+    type: average
+    sql: ${age} ;;
+  }
+
 #   parameter: selfwritten_select {
 #     type: string
 #   }
@@ -143,15 +148,11 @@ view: directors {
 #     sql:  (case when cast(${selfwritten} as string) = "Yes" then 1 else 0 end) ;;
 #   }
 
+
   measure: top_5_directors {
     description: "Top 5 Directors Based on Average IMDB Rating"
     type: string
-    sql: pairs_sum_top_n(ARRAY_AGG(STRUCT(${name} as key, ${imdb_ratings.avg_rating} as value)), 5) ;;
-#     link: {
-#       label: "IMDb"
-#       url: "https://www.imdb.com/name/{{ ['director_id'] }}"
-#       icon_url: "https://imdb.com/favicon.ico"
-#     }
+    sql: pairs_sum_top_n(ARRAY_AGG(STRUCT(${name} as key, ${ratings_tier.rating} as value)), 5) ;;
     drill_fields: [directors.name, imdb_ratings.avg_rating]
   }
 
