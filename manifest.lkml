@@ -1,7 +1,7 @@
 project_name: "mak_kitchensink"
 
 application: kitchensink {
-  label: "Kitchen sink"
+  label: "Milli Kitchen Sink"
   url: "http://localhost:8080/bundle.js"
   entitlements: {
     local_storage: yes
