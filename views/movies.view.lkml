@@ -63,9 +63,15 @@ view: movies {
     sql: ${TABLE}.overview ;;
   }
 
+  measure: list {
+    type: list
+    list_field: directors.name
+  }
+
   dimension_group: release {
     type: time
     timeframes: [
+      month,
       raw,
       date,
       day_of_week,
@@ -128,6 +134,27 @@ view: movies {
       label: "{{ ['movies.homepage_link'] }}"
       url: "{{ ['movies.homepage'] }}"
     }
+#     action: {
+#       label: "Seen?"
+#       url: ""
+#
+#       param: {
+#         name: "title"
+#         value: "{{ value }}"
+#       }
+#       form_param: {
+#         name: "annotation"
+#         type: select
+#         label: "Seen?"
+#         default: "No"
+#         option: {
+#           name: "No"
+#         }
+#         option: {
+#           name: "Yes"
+#         }
+#       }
+#     }
   }
 
   dimension: poster {
@@ -256,7 +283,6 @@ view: movies {
     drill_fields: [title, metric]
   }
 
-
 # INVISIBLE
 
   dimension: has_homepage{
@@ -279,6 +305,7 @@ view: movies {
   measure: tmdb_rating {
     hidden: yes
     type: average
+    value_format_name: decimal_4
     sql: ${vote_avg} ;;
   }
 

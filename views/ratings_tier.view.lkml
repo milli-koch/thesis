@@ -37,6 +37,7 @@ view: ratings_tier {
   measure: average_rating  {
     hidden: yes
     type: average
+    value_format_name: decimal_0
     sql: ${curved_rating} ;;
   }
 

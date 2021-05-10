@@ -35,6 +35,10 @@ view: directors {
       url: "https://www.imdb.com/name/{{ ['director_id'] }}"
       icon_url: "https://imdb.com/favicon.ico"
     }
+    link: {
+      label: "Dashboard"
+      url: "/dashboards/194?Director=%25{{ directors.name | url_encode }}%25"
+    }
   }
 
   dimension_group: first_movie {
@@ -46,6 +50,7 @@ view: directors {
       month
     ]
     sql: cast(${TABLE}.first_movie as timestamp) ;;
+    convert_tz: no
   }
 
   dimension: is_first_movie {
@@ -139,14 +144,19 @@ view: directors {
     sql: ${age} ;;
   }
 
-#   parameter: selfwritten_select {
-#     type: string
-#   }
-#
-#   measure: selfwritten_flag {
-#     type: number
-#     sql:  (case when cast(${selfwritten} as string) = "Yes" then 1 else 0 end) ;;
-#   }
+  parameter: director_select {
+    type: string
+  }
+
+  dimension: var {
+    sql: 1 ;;
+    html: {{ director_select._parameter_value }} ;;
+  }
+
+  dimension: director_flag {
+    type: number
+    sql:  (case when {% parameter director_select %} = ${name} then 1 else 0 end) ;;
+  }
 
 
   measure: top_5_directors {
